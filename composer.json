@@ -3,24 +3,14 @@
   "description": "The Micro Mobile PHP Route",
   "keywords": ["croute", "luyunhua"],
   "license": "MIT",
+  "type": "library",
   "require": {
     "php": ">=5.5.9"
   },
-  "require-dev": {
 
-  },
   "autoload": {
-    "classmap": [
-
-    ],
-    "psr-4": {
-
-    }
+    "psr-4": {"Tomato\\": "src/Tomato/"}
   },
-  "autoload-dev": {
-
-  },
-
   "repositories": {
     "packagist": {
       "type": "composer",
