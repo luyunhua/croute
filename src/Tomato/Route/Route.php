@@ -10,9 +10,9 @@ class Route
 {
     private $routes = array();
 
-    public function addRoute ($method = '', $uri='', $callback = '')
+    public function addRoute ($method = '', $pattern='', $callback = '')
     {
-        array_push($this->routes, ['method' =>$method, 'uri' =>$uri, 'callback' =>$callback]);
+        array_push($this->routes, ['method' =>strtoupper($method), 'pattern' =>$pattern, 'callback' =>$callback]);
     }
 
     public function getRoutes()
