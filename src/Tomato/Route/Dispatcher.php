@@ -13,9 +13,9 @@ use Symfony\Component\HttpFoundation\Request;
 class Dispatcher
 {
     private $route;
-    private $currentRoute;
     private $path;
     private $request;
+    private $matchRoute;
     public function __construct(Route $route)
     {
         $this->route = $route;
@@ -26,7 +26,7 @@ class Dispatcher
     public function init()
     {
         $this->setPath($this->request->get('_url'));
-        $this->parseRoute();
+        $this->setMatchRoute();
     }
 
     public function getPath()
@@ -40,55 +40,37 @@ class Dispatcher
     }
 
 
-    public function parseRoute()
+    public function getMatchRoute()
     {
-        foreach ($this->route->getRoutes() as $k => $v) {
-            //替换路由中所有的/变为\/
-            $v['pattern'] = str_replace('/', '\/', $v['pattern']);
-            if ( strpos($v['pattern'], '[number]')) {
-                $v['pattern'] = str_replace('[number]', '\d+', $v['pattern']);
-            }
-
-            if ( strpos($v['pattern'], '[string]')) {
-                $v['pattern'] = str_replace('[string]', '\w+', $v['pattern']);
-            }
-
-            if ($ret = preg_match("/^{$v['pattern']}$/i", $this->path)) {
-                $this->setCurrentRoute($v);
-                return $k;
-            }
-            throw new NotFoundException('route not found');
-        }
-
+        return $this->matchRoute;
     }
 
-    public function setCurrentRoute ($currentRoute)
+    public function setMatchRoute()
     {
-        $this->currentRoute = $currentRoute;
+        $this->matchRoute = $this->route->match($this->path);
     }
-
-    public function  getCurrentRoute()
-    {
-        return $this->currentRoute;
-    }
-
-
 
     public function run()
     {
-        $currentRoute = $this->getCurrentRoute();
-        if ( is_callable($currentRoute['callback']) ) {
-            return call_user_func($currentRoute['callback']);
+        if ( is_callable($this->getMatchRoute()['callback']) ) {
+            return call_user_func($this->getMatchRoute()['callback']);
         }
-        $caList = explode('@', $currentRoute['callback']);
-        if ( count($caList) != 2 ) {
+        $ctrlList = explode('@', $this->getMatchRoute()['callback']);
+        if ( count($ctrlList) != 2 ) {
             throw new \Exception('parameter callback exception');
         }
 
-        $ctrl = $caList[0];
-        $action = $caList[1];
+        $ctrl = $ctrlList[0];
+        $action = $ctrlList[1];
+
+        if (!class_exists($ctrl)) {
+            throw new ClassNotFoundException("{$ctrl} Not Found");
+        }
 
         $class = new $ctrl;
+        if (!method_exists($class, $action)) {
+            throw new FunctionNotFoundException("{$action} method is not defined In class {$ctrl} ");
+        }
         $class->$action();
     }
 
