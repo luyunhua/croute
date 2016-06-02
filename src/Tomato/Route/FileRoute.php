@@ -15,13 +15,13 @@ class FileRoute implements IRoute
     private $routesList = [];
 
 
-    public function put($route=[])
+    public function add($route=[])
     {
-        $route['method'] = strtoupper($route['method']);
+        //print_r($route);
         $this->routesList[$route['pattern']]  = $route;
     }
 
-    public function get($key)
+    public function xget($key)
     {
         return $this->routesList[$key];
     }
@@ -30,6 +30,7 @@ class FileRoute implements IRoute
     public function match($method = 'GET' ,$path = '')
     {
         $keys = array_keys($this->routesList);
+
         foreach ($keys as $v) {
             $originKey = $v;
             $v = str_replace('/', '\/', $v);
@@ -40,15 +41,61 @@ class FileRoute implements IRoute
             if ( strpos($v, '[string]')) {
                 $v = str_replace('[string]', '\w+', $v);
             }
-            echo $this->get($originKey)['method'].'<p>';
-
             $regx = "/^\/?{$v}\/?$/i";
             if ($ret = preg_match($regx, $path)&&
-                $method == $this->get($originKey)['method']) {
+                $method == $this->xget($originKey)['method']) {
 
-                return $this->get($originKey);
+                return $this->xget($originKey);
             }
-            return false;
+
         }
+        return false;
     }
+
+    public function get($pattern = '', $ctrl = '')
+    {
+        $this->add([
+            'method' => 'GET',
+            'pattern' => $pattern,
+            'callback' => $ctrl
+        ]);
+    }
+
+    public function post($pattern = '', $ctrl = '')
+    {
+        $this->add([
+            'method' => 'POST',
+            'pattern' => $pattern,
+            'callback' => $ctrl
+        ]);
+    }
+
+    public function put($pattern = '', $ctrl = '')
+    {
+        $this->add([
+            'method' => 'PUT',
+            'pattern' => $pattern,
+            'callback' => $ctrl
+        ]);
+    }
+
+    public function delete($pattern = '', $ctrl = '')
+    {
+        $this->add([
+            'method' => 'DELETE',
+            'pattern' => $pattern,
+            'callback' => $ctrl
+        ]);
+    }
+
+    public function header($pattern = '', $ctrl = '')
+    {
+        $this->add([
+            'method' => 'HEADER',
+            'pattern' => $pattern,
+            'callback' => $ctrl
+        ]);
+    }
+
+
 }

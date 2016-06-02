@@ -11,12 +11,21 @@ namespace Tomato\Route;
 
 interface IRoute
 {
-    public function put($route=[]);
+    public function add($route=[]);
 
-    public function get($key);
+    public function xget($key);
 
     public function match($method = 'GET', $path = '');
 
+    public function get($pattern = '', $ctrl = '');
+
+    public function post($pattern = '', $ctrl = '');
+
+    public function put($pattern = '', $ctrl = '');
+
+    public function delete($pattern = '', $ctrl = '');
+
+    public function header($pattern = '', $ctrl = '');
 
 
 }

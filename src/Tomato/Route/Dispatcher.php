@@ -32,7 +32,9 @@ class Dispatcher
         if ( is_callable($match['callback']) ) {
             return call_user_func($match['callback']);
         }
+
         $ctrlList = explode('@', $match['callback']);
+
         if ( count($ctrlList) != 2 ) {
             throw new \Exception('parameter callback exception');
         }
@@ -41,7 +43,7 @@ class Dispatcher
         $action = $ctrlList[1];
 
         if (!class_exists($ctrl)) {
-            throw new ClassNotFoundException("{$ctrl} Not Found");
+            throw new \Exception("{$ctrl} Not Found");
         }
 
         $class = new $ctrl;
@@ -52,9 +54,10 @@ class Dispatcher
     }
 
     //资源回收
-    public function destroy()
+    public function __destruct()
     {
-
+        $this->route = null;
+        $this->request = null;
     }
 
 }
