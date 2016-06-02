@@ -8,7 +8,13 @@
 
 namespace Tomato\Route;
 
-
+/**
+ * Author     : luyh@59store.com
+ * CreateTime : ${DATE} ${TIME}
+ * Description: [基于类对象的路由]
+ * Class FileRoute
+ * @package Tomato\Route
+ */
 class FileRoute implements IRoute
 {
     private $config;
@@ -34,13 +40,6 @@ class FileRoute implements IRoute
         foreach ($keys as $v) {
             $originKey = $v;
             $v = str_replace('/', '\/', $v);
-            if ( strpos($v, '[number]')) {
-                $v = str_replace('[number]', '\d+', $v);
-            }
-
-            if ( strpos($v, '[string]')) {
-                $v = str_replace('[string]', '\w+', $v);
-            }
             $regx = "/^\/?{$v}\/?$/i";
             if ($ret = preg_match($regx, $path)&&
                 $method == $this->xget($originKey)['method']) {

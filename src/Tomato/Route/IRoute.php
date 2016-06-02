@@ -8,7 +8,10 @@
 
 namespace Tomato\Route;
 
-
+/**
+ * Interface IRoute
+ * @package Tomato\Route
+ */
 interface IRoute
 {
     public function add($route=[]);

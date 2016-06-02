@@ -9,7 +9,13 @@
 namespace Tomato\Route;
 use Symfony\Component\HttpFoundation\Request;
 
-
+/**
+ * Author     : luyh@59store.com
+ * CreateTime : ${DATE} ${TIME}
+ * Description: [转发器]
+ * Class Dispatcher
+ * @package Tomato\Route
+ */
 class Dispatcher
 {
     private $route;
